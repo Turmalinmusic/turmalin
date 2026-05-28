@@ -432,9 +432,16 @@ h3 {
 .artist-grid,
 .side-project {
   display: grid;
-  grid-template-columns: minmax(0, 1.22fr) minmax(18rem, 0.78fr);
   gap: clamp(1.5rem, 4vw, 3.2rem);
   align-items: center;
+}
+
+.artist-grid {
+  grid-template-columns: minmax(0, 1.42fr) minmax(16rem, 0.58fr);
+}
+
+.side-project {
+  grid-template-columns: minmax(20rem, 0.9fr) minmax(0, 1.1fr);
 }
 
 .artist-grid,
@@ -468,7 +475,12 @@ h3 {
 .gold-text {
   color: var(--gold);
   font-weight: 900;
+  hyphens: none;
   text-shadow: 0 0 0.75rem rgba(255, 180, 84, 0.22);
+}
+
+.no-break {
+  white-space: nowrap;
 }
 
 .loop-video,
@@ -485,10 +497,20 @@ h3 {
   box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.28);
 }
 
-.loop-video video {
+.loop-video {
+  background: transparent;
+}
+
+.loop-video video,
+.loop-video iframe {
   width: 100%;
   aspect-ratio: 9 / 12;
   object-fit: cover;
+}
+
+.loop-video iframe {
+  height: auto;
+  border: 0;
 }
 
 .bpm-panel {
@@ -772,10 +794,17 @@ input[type="range"] {
   margin-bottom: 0.9rem;
 }
 
+.side-image {
+  width: min(100%, 34rem);
+  aspect-ratio: 4 / 5;
+  justify-self: center;
+}
+
 .side-image img {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: 100%;
   object-fit: cover;
+  object-position: center 42%;
 }
 
 .side-project > div:last-child {
