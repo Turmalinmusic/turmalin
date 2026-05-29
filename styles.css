@@ -260,6 +260,24 @@ h3 {
   line-height: 1;
 }
 
+.is-blink-browser h1,
+.is-blink-browser h2,
+.is-blink-browser h3 {
+  background:
+    radial-gradient(circle at 28% 18%, rgba(255, 246, 173, 0.88) 0 0.055rem, transparent 0.06rem 0.28rem),
+    radial-gradient(circle at 68% 72%, rgba(98, 45, 9, 0.82) 0 0.045rem, transparent 0.05rem 0.24rem),
+    repeating-linear-gradient(122deg, rgba(28, 12, 3, 0.9) 0 0.05rem, rgba(255, 218, 105, 0.34) 0.05rem 0.095rem, transparent 0.095rem 0.34rem),
+    repeating-linear-gradient(32deg, rgba(255, 245, 172, 0.44) 0 0.035rem, rgba(83, 38, 9, 0.26) 0.035rem 0.08rem, transparent 0.08rem 0.3rem),
+    linear-gradient(180deg, #fff0a5 0%, #e2a447 19%, #744012 40%, #271004 53%, #aa601f 70%, #ffd17b 84%, #6e3a10 100%);
+  background-size: 0.72rem 0.72rem, 0.62rem 0.62rem, 0.95rem 0.95rem, 0.7rem 0.7rem, auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow:
+    0.03em 0.045em 0 rgba(26, 9, 2, 0.96),
+    -0.015em -0.015em 0 rgba(255, 239, 176, 0.26),
+    0 0.11em 0 rgba(32, 13, 3, 0.82);
+}
+
 .lead {
   max-width: 45rem;
   margin: 1.25rem auto 0;
@@ -647,6 +665,11 @@ input[type="range"] {
 .soundcloud-frame,
 .sc-card iframe {
   border-color: rgba(143, 92, 255, 0.36);
+}
+
+.is-blink-browser .sc-card iframe {
+  background: #050713;
+  filter: invert(1) hue-rotate(180deg) saturate(0.78) brightness(0.72);
 }
 
 .soundcloud-cards {
@@ -1346,11 +1369,6 @@ textarea {
 
   .soundcloud-frame iframe {
     height: 440px;
-  }
-
-  .sc-card iframe {
-    background: #050713;
-    filter: invert(1) hue-rotate(180deg) saturate(0.78) brightness(0.72);
   }
 
   .site-footer {
