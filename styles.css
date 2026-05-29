@@ -1348,6 +1348,11 @@ textarea {
     height: 440px;
   }
 
+  .sc-card iframe {
+    background: #050713;
+    filter: invert(1) hue-rotate(180deg) saturate(0.78) brightness(0.72);
+  }
+
   .site-footer {
     display: grid;
     justify-items: center;
