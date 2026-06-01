@@ -5,7 +5,7 @@ const attributes = [...document.querySelectorAll("[data-attribute-toggle]")];
 const attributeAudioButtons = [...document.querySelectorAll("[data-attribute-audio]")];
 const includeConfig = document.querySelector("[data-include-config]");
 const summary = document.querySelector("[data-summary]");
-const mailLink = document.querySelector("[data-mail-link]");
+const mailLinks = [...document.querySelectorAll("[data-mail-link]")];
 const message = document.querySelector("#bookingMessage");
 const bpmLabel = document.querySelector("[data-bpm-label]");
 const trackTitle = document.querySelector("[data-track-title]");
@@ -18,6 +18,10 @@ const bookingBpmMaxLabel = document.querySelector("[data-booking-bpm-max-label]"
 const bookingRangeAxis = document.querySelector("[data-booking-range-axis]");
 const setLength = document.querySelector("[data-set-length]");
 const setLengthLabel = document.querySelector("[data-set-length-label]");
+const isBlinkBrowser = /\b(Chrome|Chromium|CriOS|Edg|OPR|Ecosia)\b/i.test(navigator.userAgent)
+  && !/\bSafari\/[\d.]+ Version\//i.test(navigator.userAgent);
+
+document.documentElement.classList.toggle("is-blink-browser", isBlinkBrowser);
 
 const tracks = trackButtons.map((button) => ({
   bpm: Number(button.dataset.bpm),
@@ -102,33 +106,19 @@ const updateBooking = () => {
   const customRange = bookingBpmRange();
   const lengthText = bookingSetLength();
   const customRangeText = customRange ? `${customRange.min} - ${customRange.max} BPM` : "noch offen";
+  const mailRangeText = customRange ? `${customRange.min} BPM bis ${customRange.max} BPM` : "noch offen";
   const shouldIncludeConfig = includeConfig?.checked ?? true;
-  const bodyLines = [
-    "Hi TURMALIN,",
-    "",
-    "ich möchte dich gerne für ein Set anfragen.",
-    "",
-    "Event-Infos:",
-    message?.value || "",
-  ];
+  const bodyLines = [message?.value || ""];
 
   if (shouldIncludeConfig) {
-    bodyLines.splice(
-      4,
-      0,
-      `Gewünschte Set-Spanne: ${customRangeText}`,
-      `Gewünschte Set-Länge: ${lengthText || "noch offen"}`,
-      `Attribute: ${attrs.length ? attrs.join(", ") : "noch offen"}`
+    bodyLines.push(
+      "",
+      "",
+      "Booking Angaben:",
+      `Gewünschte Set Länge: ${lengthText || "noch offen"}`,
+      `Gewünschte BPM Spanne: ${mailRangeText}`,
+      `Musikalische Attribute: ${attrs.length ? attrs.join(", ") : "noch offen"}`
     );
-
-    if (activeTrack) {
-      bodyLines.splice(
-        6,
-        0,
-        `Gewünschte BPM/Energie: ${activeTrack.bpm} BPM`,
-        `Track-Referenz: ${activeTrack.title} (${activeTrack.kind}, Start bei ${activeTrack.start})`
-      );
-    }
   }
 
   const body = bodyLines.join("\n");
@@ -141,10 +131,19 @@ const updateBooking = () => {
       ? `${customRangeText}${lengthSummary}${referenceText} · ${attrText}`
       : "BPM & Charakteristiken werden nicht in die E-Mail übernommen.";
   }
-  if (mailLink) {
+  mailLinks.forEach((mailLink) => {
     mailLink.href = `mailto:turmalin.music@gmail.com?subject=${encodeURIComponent("Booking Anfrage TURMALIN")}&body=${encodeURIComponent(body)}`;
-  }
+  });
 };
+
+mailLinks.forEach((mailLink) => {
+  mailLink.addEventListener("click", (event) => {
+    updateBooking();
+    if (!mailLink.href.includes("Booking%20Angaben")) return;
+    event.preventDefault();
+    window.location.href = mailLink.href;
+  });
+});
 
 trackButtons.forEach((button) => {
   button.addEventListener("click", () => {
