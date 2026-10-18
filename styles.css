@@ -1473,3 +1473,14 @@ textarea {
 .sound-section .sc-card-info h3 a:focus-visible { text-decoration: none; }
 .booking-phone { text-decoration: none; }
 .booking-phone a { text-decoration: underline; text-underline-offset: 0.2rem; }
+
+/* Press material complements the main booking action. */
+.presskit-downloads { margin-top: 1.8rem; padding-top: 1.4rem; border-top: 1px solid var(--line); }
+.booking .presskit-downloads h3 { margin: 0 0 1rem; color: var(--muted); font-family: inherit; font-size: 1rem; font-weight: 700; line-height: 1.4; letter-spacing: 0; white-space: normal; text-transform: none; background: none; -webkit-text-fill-color: currentColor; text-shadow: none; }
+.presskit-download-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; }
+.presskit-download { display: flex; flex-direction: column; justify-content: center; gap: 0.4rem; padding: 0.9rem; min-height: 5rem; border: 1px solid var(--line); border-radius: 7px; background: rgba(5,7,19,0.55); text-decoration: none; line-height: 1.4; }
+.presskit-download span { color: var(--gold); font-size: 0.9rem; font-weight: 700; }
+.presskit-download small { color: var(--muted); font-size: 0.73rem; }
+.presskit-download:hover { border-color: var(--gold); background: rgba(241,189,103,0.06); }
+.presskit-credit-note { margin: 0.9rem 0 0; max-width: 42rem; color: var(--muted); font-size: 0.78rem; line-height: 1.6; }
+@media (max-width: 560px) { .presskit-download-grid { grid-template-columns: 1fr; } }
