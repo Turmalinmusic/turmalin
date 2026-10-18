@@ -1380,3 +1380,96 @@ textarea {
     margin-inline: auto;
   }
 }
+
+/* Booking: simple request with optional sound preferences. */
+.booking .booking-content {
+  display: block;
+  width: min(100%, 48rem);
+  margin-inline: auto;
+}
+.booking-intro { margin: 1rem 0 0; color: var(--muted); }
+.booking .message-label { display: block; flex: none; margin: 1.5rem 0 0.6rem; }
+.booking textarea { height: auto; min-height: 10rem; }
+.booking-customizer { margin-top: 1.2rem; border: 1px solid var(--line); border-radius: 8px; background: rgba(5, 7, 19, 0.58); }
+.booking-customizer summary { padding: 1rem; cursor: pointer; color: var(--gold); font-weight: 700; }
+.booking-customizer summary span { color: var(--muted); font-weight: 400; }
+.booking-customizer .booking-config { padding: 0 1rem 1rem; }
+.customizer-hint { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin: 0; }
+.booking-customizer .config-title { font-size: 1.4rem; }
+.booking-customizer .booking-attributes { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.65rem; }
+.booking-customizer .attribute-item { grid-template-columns: 2.35rem minmax(0, 1fr); gap: 0.45rem; }
+.booking-customizer .attribute-choice { font-size: 0.85rem; }
+.booking .booking-actions { display: block; margin-top: 1.5rem; }
+.booking-mail-button { display: flex; align-items: center; justify-content: center; min-height: 3.5rem; padding: 1rem 1.25rem; border: 1px solid var(--gold); border-radius: 8px; background: linear-gradient(135deg, #f1ce86, #dba654); color: #17101b; text-align: center; text-decoration: none; font-weight: 800; line-height: 1.4; }
+.booking-mail-button:hover { background: #ffe0a3; }
+.booking-contact { margin-top: 1.2rem; color: var(--muted); font-size: 0.95rem; }
+.booking-email-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.8rem; }
+.booking-email-row a { overflow-wrap: anywhere; text-underline-offset: 0.2rem; }
+.booking-email-row button, .booking-reset { padding: 0.65rem 0.85rem; border: 1px solid var(--line); border-radius: 6px; background: rgba(255,255,255,0.04); color: var(--muted); font: inherit; cursor: pointer; }
+.booking-reset { justify-self: start; font-size: 0.85rem; }
+.booking-phone { display: inline-block; margin-top: 0.75rem; text-underline-offset: 0.2rem; }
+.copy-status { margin: 0.5rem 0 0; font-size: 0.85rem; }
+.copy-status:empty { display: none; }
+.booking :is(a, button, summary, textarea):focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+
+/* Featured live performance beside the artist biography. */
+.live-clip { min-width: 0; width: 100%; margin: 0; }
+.live-clip-frame { position: relative; overflow: hidden; border: 1px solid rgba(241,189,103,0.35); border-radius: 10px; background: #080611; box-shadow: 0 0 1.5rem rgba(143,92,255,0.12), 0 1rem 3rem rgba(0,0,0,0.28); }
+.live-clip video { width: 100%; aspect-ratio: 9 / 14; object-fit: cover; }
+.live-clip-play { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; width: 100%; padding: 1rem; border: 0; border-radius: 0; background: linear-gradient(transparent 40%, rgba(5,7,19,0.35)); color: #fff1cd; cursor: pointer; }
+.live-clip-play[hidden] { display: none; }
+.live-clip-play-icon { display: grid; place-items: center; width: 3.7rem; height: 3.7rem; padding-left: 0.2rem; border: 1px solid rgba(241,189,103,0.8); border-radius: 50%; background: rgba(12,8,29,0.7); box-shadow: 0 0 1.4rem rgba(143,92,255,0.25); font-size: 1.3rem; transition: transform 160ms ease; }
+.live-clip-play:hover .live-clip-play-icon { transform: scale(1.06); }
+.live-clip-play-label { padding: 0.4rem 0.7rem; border-radius: 4px; background: rgba(5,7,19,0.78); font: 600 0.8rem/1.4 sans-serif; }
+.live-clip-play:focus-visible { outline: 2px solid var(--gold); outline-offset: -5px; }
+.live-clip figcaption { margin-top: 0.8rem; color: var(--muted); text-align: center; font-size: 0.8rem; line-height: 1.6; }
+.live-clip figcaption span { color: var(--gold); padding-inline: 0.15rem; }
+.live-clip-status { color: var(--muted); font-size: 0.85rem; }
+.live-clip-status:empty { display: none; }
+@media (max-width: 920px) {
+  .live-clip { max-width: 22rem; justify-self: center; }
+  .live-clip video { max-height: 60svh; object-fit: contain; }
+}
+
+/* Landscape main film and a separate portrait gallery. */
+.artist-grid { display: block; }
+.artist-grid .bio-copy { max-width: 56rem; margin-inline: auto; }
+.artist-grid .bio-copy p { text-align: left; }
+.artist-section > .live-clip { width: 100%; max-width: 56rem; margin: 2rem auto 0; }
+.artist-section > .live-clip video { width: 100%; aspect-ratio: 16 / 9; max-height: none; object-fit: contain; }
+.live-gallery-clip { min-width: 0; margin: 0; }
+.live-gallery-clip figcaption { margin-top: 0.75rem; color: var(--muted); font-size: 0.8rem; line-height: 1.6; text-align: center; }
+.video-grid .live-gallery-clip video { object-fit: contain; }
+@media (max-width: 640px) {
+  .video-grid .live-gallery-clip { width: min(100%, 22rem); justify-self: center; }
+}
+
+/* Compact selected mixes: small cover, clear title, directly accessible player. */
+.sc-card { display: flex; flex-direction: column; gap: 1rem; padding: 1.1rem; }
+.sc-card-heading { display: grid; grid-template-columns: 7rem minmax(0, 1fr); align-items: center; gap: 1rem; }
+.sc-card .sc-cover { display: block; width: 7rem; height: 7rem; aspect-ratio: 1; margin: 0; }
+.sc-card-info { min-width: 0; }
+.sc-card .sc-card-info h3 { margin: 0; color: #f6eddf; font-family: inherit; font-weight: 700; font-size: clamp(1.05rem, 1.6vw, 1.3rem); line-height: 1.3; letter-spacing: 0; background: none; -webkit-text-fill-color: currentColor; text-shadow: none; text-transform: none; white-space: normal; }
+.sc-card-info h3 a { text-decoration: none; }
+.sc-card-info h3 a:hover { color: var(--gold); }
+.sc-card-context { margin: 0.4rem 0 0; color: var(--muted); font-size: 0.85rem; line-height: 1.5; }
+.sc-card-bpm { margin: 0.5rem 0 0; color: var(--gold); font-size: 0.95rem; font-weight: 700; }
+.sc-card iframe { margin-top: auto; width: 100%; border: 0; border-radius: 6px; }
+.soundcloud-more { margin-top: 1.4rem; }
+@media (max-width: 400px) {
+  .sc-card-heading { grid-template-columns: 5rem minmax(0, 1fr); gap: 0.8rem; }
+  .sc-card .sc-cover { width: 5rem; height: 5rem; }
+}
+
+/* Keep the native timeline accessible before starting playback. */
+.live-clip-play { inset: 50% auto auto 50%; transform: translate(-50%, -50%); width: 3.7rem; height: 3.7rem; padding: 0; border-radius: 50%; background: transparent; }
+.live-clip-play-icon { flex-shrink: 0; }
+
+/* Caption spacing and contact-link details. */
+.video-grid .live-gallery-clip { display: flex; flex-direction: column; align-items: center; }
+.video-grid .live-gallery-clip figcaption { width: 100%; margin: 1.15rem 0 0; text-align: center; }
+.sound-section .sc-card-info h3 a,
+.sound-section .sc-card-info h3 a:hover,
+.sound-section .sc-card-info h3 a:focus-visible { text-decoration: none; }
+.booking-phone { text-decoration: none; }
+.booking-phone a { text-decoration: underline; text-underline-offset: 0.2rem; }
