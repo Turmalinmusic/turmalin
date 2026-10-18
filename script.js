@@ -3,8 +3,6 @@ const range = document.querySelector("[data-bpm-range]");
 const trackButtons = [...document.querySelectorAll("[data-track]")];
 const attributes = [...document.querySelectorAll("[data-attribute-toggle]")];
 const attributeAudioButtons = [...document.querySelectorAll("[data-attribute-audio]")];
-const includeConfig = document.querySelector("[data-include-config]");
-const summary = document.querySelector("[data-summary]");
 const mailLinks = [...document.querySelectorAll("[data-mail-link]")];
 const message = document.querySelector("#bookingMessage");
 const bpmLabel = document.querySelector("[data-bpm-label]");
@@ -87,6 +85,9 @@ const bookingSetLength = () => {
   return label;
 };
 
+let bpmChosen = false;
+let lengthChosen = false;
+
 const updateBooking = () => {
   if (activeTrack) {
     if (bpmLabel) bpmLabel.textContent = `${activeTrack.bpm} BPM`;
@@ -105,44 +106,20 @@ const updateBooking = () => {
   const attrs = selectedAttributes();
   const customRange = bookingBpmRange();
   const lengthText = bookingSetLength();
-  const customRangeText = customRange ? `${customRange.min} - ${customRange.max} BPM` : "noch offen";
-  const mailRangeText = customRange ? `${customRange.min} BPM bis ${customRange.max} BPM` : "noch offen";
-  const shouldIncludeConfig = includeConfig?.checked ?? true;
   const bodyLines = [message?.value || ""];
-
-  if (shouldIncludeConfig) {
-    bodyLines.push(
-      "",
-      "",
-      "Booking Angaben:",
-      `Gewünschte Set Länge: ${lengthText || "noch offen"}`,
-      `Gewünschte BPM Spanne: ${mailRangeText}`,
-      `Musikalische Attribute: ${attrs.length ? attrs.join(", ") : "noch offen"}`
-    );
-  }
-
+  const configLines = [];
+  if (bpmChosen && customRange) configLines.push(`Gewünschte BPM-Spanne: ${customRange.min}–${customRange.max} BPM`);
+  if (lengthChosen && lengthText) configLines.push(`Gewünschte Setlänge: ${lengthText}`);
+  if (attrs.length) configLines.push(`Musikalische Attribute: ${attrs.join(", ")}`);
+  if (configLines.length) bodyLines.push("", "Sound & Setlänge:", ...configLines);
   const body = bodyLines.join("\n");
-  const attrText = attrs.length ? attrs.join(", ") : "Attribute noch auswählen";
-  const referenceText = activeTrack ? ` · Referenz: ${activeTrack.bpm} BPM ${activeTrack.kind}` : "";
-  const lengthSummary = lengthText ? ` · ${lengthText}` : "";
-
-  if (summary) {
-    summary.textContent = shouldIncludeConfig
-      ? `${customRangeText}${lengthSummary}${referenceText} · ${attrText}`
-      : "BPM & Charakteristiken werden nicht in die E-Mail übernommen.";
-  }
   mailLinks.forEach((mailLink) => {
     mailLink.href = `mailto:turmalin.music@gmail.com?subject=${encodeURIComponent("Booking Anfrage TURMALIN")}&body=${encodeURIComponent(body)}`;
   });
 };
 
 mailLinks.forEach((mailLink) => {
-  mailLink.addEventListener("click", (event) => {
-    updateBooking();
-    if (!mailLink.href.includes("Booking%20Angaben")) return;
-    event.preventDefault();
-    window.location.href = mailLink.href;
-  });
+  mailLink.addEventListener("click", updateBooking);
 });
 
 trackButtons.forEach((button) => {
@@ -159,7 +136,8 @@ range?.addEventListener("input", () => {
 
 attributes.forEach((button) => {
   button.addEventListener("click", () => {
-    button.classList.toggle("is-active");
+    const selected = button.classList.toggle("is-active");
+    button.setAttribute("aria-pressed", String(selected));
     updateBooking();
   });
 });
@@ -198,11 +176,34 @@ attributeAudioButtons.forEach((button) => {
 });
 
 [bookingBpmMin, bookingBpmMax].forEach((input) => {
-  input?.addEventListener("input", updateBooking);
+  input?.addEventListener("input", () => { bpmChosen = true; updateBooking(); });
 });
 
-setLength?.addEventListener("input", updateBooking);
-includeConfig?.addEventListener("change", updateBooking);
+setLength?.addEventListener("input", () => { lengthChosen = true; updateBooking(); });
+attributes.forEach((button) => button.setAttribute("aria-pressed", "false"));
+document.querySelector("[data-reset-config]")?.addEventListener("click", () => {
+  bpmChosen = false;
+  lengthChosen = false;
+  [bookingBpmMin, bookingBpmMax, setLength].forEach((input) => { if (input) input.value = input.defaultValue; });
+  attributes.forEach((button) => {
+    button.classList.remove("is-active");
+    button.setAttribute("aria-pressed", "false");
+  });
+  stopAttributeAudio();
+  updateBooking();
+});
+document.querySelector("[data-customizer]")?.addEventListener("toggle", (event) => {
+  if (!event.target.open) stopAttributeAudio();
+});
+document.querySelector("[data-copy-email]")?.addEventListener("click", async () => {
+  const status = document.querySelector("[data-copy-status]");
+  try {
+    await navigator.clipboard.writeText("turmalin.music@gmail.com");
+    status.textContent = "E-Mail-Adresse kopiert.";
+  } catch {
+    status.textContent = "Bitte die E-Mail-Adresse markieren und kopieren.";
+  }
+});
 message?.addEventListener("input", updateBooking);
 window.addEventListener("scroll", updateHeader, { passive: true });
 
@@ -255,3 +256,30 @@ autoVideos.forEach((video) => {
 
 updateHeader();
 updateBooking();
+
+const featuredVideo = document.querySelector("[data-featured-video]");
+const featuredPlay = document.querySelector("[data-featured-play]");
+const featuredStatus = document.querySelector("[data-featured-status]");
+if (featuredVideo && featuredPlay) {
+  featuredVideo.controls = true;
+  featuredPlay.hidden = false;
+  featuredPlay.addEventListener("click", async () => {
+    featuredVideo.controls = true;
+    featuredVideo.muted = false;
+    try {
+      await featuredVideo.play();
+      featuredPlay.hidden = true;
+      featuredStatus.textContent = "";
+    } catch {
+      featuredPlay.hidden = true;
+      featuredStatus.textContent = "Bitte starte den Clip über die Videosteuerung.";
+    }
+  });
+  featuredVideo.addEventListener("play", () => { featuredPlay.hidden = true; });
+  featuredVideo.addEventListener("seeking", () => { featuredPlay.hidden = true; });
+  featuredVideo.addEventListener("ended", () => { featuredPlay.hidden = false; });
+  const featuredObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => { if (!entry.isIntersecting) featuredVideo.pause(); });
+  });
+  featuredObserver.observe(featuredVideo);
+}
