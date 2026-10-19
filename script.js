@@ -1,3 +1,5 @@
+const bookingText = (key) => window.turmalinI18n.t(key);
+
 const header = document.querySelector("[data-header]");
 const range = document.querySelector("[data-bpm-range]");
 const trackButtons = [...document.querySelectorAll("[data-track]")];
@@ -76,7 +78,8 @@ const bookingBpmRange = () => {
 const bookingSetLength = () => {
   if (!setLength) return null;
   const length = Number(setLength.value);
-  const label = `${String(length).replace(".", ",")} ${length === 1 ? "Stunde" : "Stunden"}`;
+  const number = new Intl.NumberFormat(document.documentElement.lang).format(length);
+  const label = `${number} ${bookingText(length === 1 ? "hour" : "hours")}`;
   if (setLengthLabel) setLengthLabel.textContent = label;
   const min = Number(setLength.min);
   const max = Number(setLength.max);
@@ -92,7 +95,7 @@ const updateBooking = () => {
   if (activeTrack) {
     if (bpmLabel) bpmLabel.textContent = `${activeTrack.bpm} BPM`;
     if (trackTitle) trackTitle.textContent = activeTrack.title;
-    if (trackDetail) trackDetail.textContent = `${activeTrack.kind} · Start bei ${activeTrack.start}`;
+    if (trackDetail) trackDetail.textContent = `${activeTrack.kind} · ${bookingText("start")} ${activeTrack.start}`;
     if (spotifyPlayer && activeTrack.spotify && spotifyPlayer.src !== activeTrack.spotify) {
       spotifyPlayer.src = activeTrack.spotify;
     }
@@ -108,13 +111,13 @@ const updateBooking = () => {
   const lengthText = bookingSetLength();
   const bodyLines = [message?.value || ""];
   const configLines = [];
-  if (bpmChosen && customRange) configLines.push(`Gewünschte BPM-Spanne: ${customRange.min}–${customRange.max} BPM`);
-  if (lengthChosen && lengthText) configLines.push(`Gewünschte Setlänge: ${lengthText}`);
-  if (attrs.length) configLines.push(`Musikalische Attribute: ${attrs.join(", ")}`);
-  if (configLines.length) bodyLines.push("", "Sound & Setlänge:", ...configLines);
+  if (bpmChosen && customRange) configLines.push(`${bookingText("bpm")}: ${customRange.min}–${customRange.max} BPM`);
+  if (lengthChosen && lengthText) configLines.push(`${bookingText("length")}: ${lengthText}`);
+  if (attrs.length) configLines.push(`${bookingText("attributes")}: ${attrs.join(", ")}`);
+  if (configLines.length) bodyLines.push("", bookingText("preferences"), ...configLines);
   const body = bodyLines.join("\n");
   mailLinks.forEach((mailLink) => {
-    mailLink.href = `mailto:turmalin.music@gmail.com?subject=${encodeURIComponent("Booking Anfrage TURMALIN")}&body=${encodeURIComponent(body)}`;
+    mailLink.href = `mailto:turmalin.music@gmail.com?subject=${encodeURIComponent(bookingText("subject"))}&body=${encodeURIComponent(body)}`;
   });
 };
 
@@ -199,11 +202,12 @@ document.querySelector("[data-copy-email]")?.addEventListener("click", async () 
   const status = document.querySelector("[data-copy-status]");
   try {
     await navigator.clipboard.writeText("turmalin.music@gmail.com");
-    status.textContent = "E-Mail-Adresse kopiert.";
+    status.textContent = bookingText("copied");
   } catch {
-    status.textContent = "Bitte die E-Mail-Adresse markieren und kopieren.";
+    status.textContent = bookingText("copyError");
   }
 });
+window.addEventListener("turmalin:languagechange", updateBooking);
 message?.addEventListener("input", updateBooking);
 window.addEventListener("scroll", updateHeader, { passive: true });
 
@@ -272,7 +276,7 @@ if (featuredVideo && featuredPlay) {
       featuredStatus.textContent = "";
     } catch {
       featuredPlay.hidden = true;
-      featuredStatus.textContent = "Bitte starte den Clip über die Videosteuerung.";
+      featuredStatus.textContent = bookingText("videoError");
     }
   });
   featuredVideo.addEventListener("play", () => { featuredPlay.hidden = true; });
